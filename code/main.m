@@ -1,6 +1,6 @@
 clc; clear; close all;
 
-%% Select a point cloud
+%% Selecting a point cloud
 
 t=4;
 
@@ -13,7 +13,7 @@ hold on
 scatter3(xyz(:,1),xyz(:,2),xyz(:,3),'.k');
 axis equal
 
-%%
+%% Processing of the point cloud
 
 mfe=ones(5,1);
 output=cell(5,1);
@@ -21,7 +21,8 @@ output=cell(5,1);
 patchType=cell(1,1);
 outputFin=cell(1,1);
 mfeFin=ones(1,1);
- 
+
+% Search for the best fitting simple primitive
 i=1;
 [output{1,i}, mfe(1,i)]=SearchPlane(xyz);
 if mfe(1,i)>10^(-3) || isnan(mfe(1,i))
@@ -53,6 +54,7 @@ if mfe(1,i)>10^(-3) || isnan(mfe(1,i))
     end
 end
 
+% Minimum fitting error
 [M,I] = min(mfe);
 
 if I(i)==5 && abs((mfe(5,i)-mfe(3,i)))<5*10^(-3)
@@ -63,6 +65,7 @@ if I(i)==2 && abs((mfe(4,i)-mfe(2,i)))<5*10^(-3)
     I(i)=4;
 end
 
+% Output construction
 switch I(i)
     case 1
         patchType{1,i}='Plane';
@@ -89,9 +92,9 @@ switch I(i)
 end
 
 
-%%
+%% Output file with the type and the geometric descriptors
 
-nameFile = strcat('./testHT/pointCloud', int2str(t) , '_prediction.txt');
+nameFile = strcat('./pointCloud', int2str(t) , '_prediction.txt');
 
 descriptors=outputFin{1,i};
 writematrix(descriptors,nameFile);
